@@ -8,10 +8,13 @@ Also be prepared to discover new bugs...
 
 Installation
 ------------
-
 - Replace assp.pl into the main folder of assp.
 - Replace assp.css into the folder 'images'
 - Add assp.js into the folder 'images'
 - Add assp-init.js into the folder 'images'
 - Add cosmos.js into the folder 'images'
 
+Notes:
+------
+Tested only in Firefox 47.0.2
+The server is an instance of Debian Wheezy into an OpenVZ container
