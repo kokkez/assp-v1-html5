@@ -1,0 +1,59 @@
+/*!	box-sizing
+	------------------------------------------------------------------------- */
+html { box-sizing: border-box; }
+*, *:before, *:after { box-sizing: inherit; }
+
+a {
+	color				: #36f;
+	text-decoration		: none;
+}
+a:hover {
+	color				: #03f;
+	text-decoration		: underline;
+}
+body {
+	font-size			: 13px;
+}
+body, p, td {
+	font-family			: "trebuchet ms", sans-serif;
+	color				: #666;
+	margin				: 1rem;
+}
+p, td {
+	margin				: 0 0 1rem;
+}
+h1 {
+	line-height			: 30px;
+	border-bottom		: 2px solid #36f;
+	margin				: 0 0 1rem;
+}
+hr {
+	border-top			: solid #ccc;
+	border-width		: 1px 0 0 0;
+}
+.content {
+	background-color	: #fff;
+	border-color		: #e6e6e6;
+}
+#divlines,
+#contents {
+	font				: 12px/15px monospace, monospace;
+}
+#contents {
+	border				: 1px solid #ccc;
+	margin				: 3px;
+}
+.negative {
+	color				: #f00;
+}
+.positive {
+	color				: #090;
+}
+.note {
+	color				: #333;
+	background-color	: #fff;
+	border				: solid 1px #ccc;
+	padding				: 3px 6px;
+	margin				: 1ex 0 0;
+}
+
