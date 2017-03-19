@@ -50,6 +50,7 @@ function theApply(b,f) {
 
 function REplace(v,t) {	//	event, element target
 	if (0 in (t = $(t.data('target')))) {
+//		console.log(t,t.val(),$("#replace").val());
 		try {
 			t.val(t.val().replace(
 				eval("/"+ $("#find").val() +"/ig"),
@@ -206,9 +207,12 @@ function onClicks(v,e) {
 		typeAhead('');
 	}
 
-	//	buttons in .camp, but also A tags eslewhere
+	//	file & sync editors activators
 	if (e.is('[data-path]')) {
 		popFileEditor(e.data('path'),e.data('note'));
+	}
+	else if (e.is('[data-sync]')) {
+		popSyncEditor(e.data('sync'));
 	}
 
 	//	log lines: ip, email, files

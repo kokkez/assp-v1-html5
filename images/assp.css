@@ -40,6 +40,7 @@ a {
 a:hover {
 	color				: #03f;
 	text-decoration		: underline;
+	cursor				: pointer;
 }
 .newversion {
 	color				: #f60;
@@ -96,9 +97,8 @@ label[for="trigger"] {
 	left				: 15px;
 	z-index				: 2;
 	/* ... theming... */
-	font-size			: 48px;
-	height				: 30px;
 	cursor				: pointer;
+	font-size			: 48px;
 }
 #trigger:checked + label {
 	left				: 235px;
@@ -147,7 +147,7 @@ label[for="trigger"] {
 	background			: rgba(0,0,0,.05);
 }
 .slidemenu .words li > a:before {
-	content				: url(noIcon.png);
+	content				: url(get?file=images/noIcon.png);
 	margin				: 0 6px 0 0;
 }
 .slidemenu .alpha {
@@ -200,67 +200,19 @@ label[for="trigger"] {
 }
 
 
-/*	search
+/*	tagmenu
 	------------------------------------------------------------------------- */
-.tagmenu,
-.search {
+.tagmenu {
 	position			: fixed;
+	top					: 60px;
 	left				: 0;
 	width				: 220px;
+	bottom				: 0;
 	overflow-y			: scroll;
 	font-size			: 11px;
 	background			: #555;
 	box-shadow			: -3px 3px 6px rgba(0,0,0,.5);
 	padding				: 6px;
-}
-.search {
-	top					: 60px;
-	height				: 400px;
-	color				: #ddd;
-}
-.search h3 {
-}
-.search label {
-	display				: block;
-	padding				: 1ex 0 0;
-}
-.search input {
-	box-sizing			: border-box;
-	width				: 100%;
-	color				: #999;
-}
-.search button {
-	width				: 100%;
-	color				: #666;
-}
-
-.search input[type="search"] {
-	float				: left;
-	width				: 180px;
-	height				: 1.5em;
-	line-height			: 1.5em;
-	background			: none;
-	border				: 0 none;
-	padding				: 3px 0;
-	margin				: 0;
-}
-.search button {
-	width				: 20px;
-	height				: 1.5em;
-	line-height			: 1.5em;
-	text-indent			: 100px;
-	background			: #ccc url(path/to/image.jpg);
-	border				: 0 none;
-	margin				: 0;
-	padding				: 3px 0;
-}
-
-
-/*	tagmenu
-	------------------------------------------------------------------------- */
-.tagmenu {
-	top					: 460px;
-	bottom				: 0;
 }
 .tagmenu a {
 	color				: #ddd;
@@ -290,11 +242,11 @@ label[for="trigger"] {
 	cursor				: pointer;
 }
 .tags > li h3:before {
-	content				: url(plusIcon.png);
+	content				: url(get?file=images/plusIcon.png);
 	margin				: 0 6px 0 0;
 }
 .tags > li.opened h3:before {
-	content				: url(minusIcon.png);
+	content				: url(get?file=images/minusIcon.png);
 }
 .tags > li.opened ul {
 	display				: block;
@@ -411,13 +363,6 @@ td.push					{ padding: 0 0 0 1rem; }
 
 
 /*	whitelist / redlist / tuplets: styles
-	margin				: 1rem 0 0;
-	background			: transparent;
-	box-shadow			: none;
-	padding				: 0;
-	clear				: left;
-.parameters {
-}
 	------------------------------------------------------------------------- */
 .parameters section {
 	float				: left;
@@ -481,7 +426,7 @@ td.push					{ padding: 0 0 0 1rem; }
 .path					{ color: #699; }
 .ip:hover,
 .path:hover,
-.email:hover			{ background: rgba(0,0,0,.1); }
+.email:hover			{ background: rgba(0,0,0,.1); cursor: pointer; }
 .spampassed				{ color: #ffa500; }
 .positive				{ color: #090; }
 .negative				{ color: #f00; }
