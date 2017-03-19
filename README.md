@@ -16,5 +16,9 @@ Installation
 
 Notes:
 ------
-Tested only in Firefox 47.0.2
-The server is an instance of Debian Wheezy into an OpenVZ container
+- Tested only in Firefox 47.0.2.
+- The server is an instance of Debian Wheezy into an OpenVZ container
+
+The original distribution of ASSP is here:
+https://sourceforge.net/projects/assp/files/ASSP+Installation/ASSP+1.10.X/
+
