@@ -338,7 +338,6 @@ label[for="trigger"] {
 /*	info section
 	------------------------------------------------------------------------- */
 tbody.off				{ display: none; }
-td						{ padding: 0 6px; }
 td.push					{ padding: 0 0 0 1rem; }
 .statBox {
 	width				: 100%;
@@ -437,17 +436,23 @@ td.push					{ padding: 0 0 0 1rem; }
 
 /*	smtp connections
 	------------------------------------------------------------------------- */
+h4.east {
+	float				: right;
+	line-height			: 30px;		/*	same as sibling H1 */
+	margin				: 5px 0 0;
+}
 .controls {
 	float				: right;
+	margin-top			: -3px;
 }
-#conTable{
+.connections{
 	width				: 100%;
 }
-#conTable th {
+.connections th {
 	text-align			: left;
 	border-bottom		: 2px solid #ccc;
 }
-#conTable td {
+.connections td {
 	border-bottom		: 1px solid #ccc;
 }
 
