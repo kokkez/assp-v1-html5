@@ -4213,6 +4213,7 @@ new ASSP version is available: $availversion</a></li>\n" if $avv gt $stv;
 
   my $aLists = "<a href=lists>Whitelist / Redlist / Tuplets</a>";
   my $aAnalyze = "<a href=analyze>Mail Analyzer</a>";
+  my $aRcptRepl = "<a href=recprepl>Recipient Replacement</a>";
   my $aStats = "<a href=infostats>Info and Stats</a>";
   my $aConnections = "<a href=shutdown_list?nocache target=_blank>SMTP Connections</a>";
   my $aRestart = "<a href=shutdown>Shutdown / Restart</a>";
@@ -4222,18 +4223,20 @@ new ASSP version is available: $availversion</a></li>\n" if $avv gt $stv;
 
   if ($AsASecondary && $webSecondaryPort) {
 	$webAdminPort =~ s/\|.*//go;
-	$aLists = "<a class=secondary href=\"//$webhost:$webAdminPort/lists\" data-tip=\"On Primary: $webAdminPort\">Whitelist / Redlist / Tuplets</a>";
-	$aConnections = "<a class=secondary target=_blank href=\"//$webhost:$webAdminPort/shutdown_list?nocache\" data-tip=\"On Primary: $webAdminPort\">SMTP Connections</a>";
+	my $wp = $webAdminPort;
+	$aLists = "<a class=secondary href=\"//$webhost:$wp/lists\" data-tip=\"On Primary: $wp\">Whitelist / Redlist / Tuplets</a>";
+	$aConnections = "<a class=secondary target=_blank href=\"//$webhost:$wp/shutdown_list?nocache\" data-tip=\"On Primary: $wp\">SMTP Connections</a>";
 	$aMaillog = "<a href=\"//$webhost:$webSecondaryPort/maillog\" data-tip=\"On Secondary: $webSecondaryPort\">View Maillog Tail</a>";
-	$aAnalyze = "<a class=secondary href=\"//$webhost:$webAdminPort/analyze\" data-tip=\"On Primary: $webAdminPort\">Mail Analyzer</a>";
-	$aStats = "<a class=secondary href=\"//$webhost:$webAdminPort/infostats\" data-tip=\"On Primary: $webAdminPort\">Info and Stats</a>";
-	$aRestart = "<a class=secondary href=\"//$webhost:$webAdminPort/shutdown\" data-tip=\"On Primary: $webAdminPort\">Shutdown / Restart</a>";
+	$aAnalyze = "<a class=secondary href=\"//$webhost:$wp/analyze\" data-tip=\"On Primary: $wp\">Mail Analyzer</a>";
+	$aRcptRepl = "<a class=secondary href=http://$webhost:$wp/recprepl data-tip=\"On Primary: $wp\">Recipient Replacement</a>";
+	$aStats = "<a class=secondary href=\"//$webhost:$wp/infostats\" data-tip=\"On Primary: $wp\">Info and Stats</a>";
+	$aRestart = "<a class=secondary href=\"//$webhost:$wp/shutdown\" data-tip=\"On Primary: $wp\">Shutdown / Restart</a>";
   }
   else {
 	&readSecondaryPID();
 	if ($SecondaryPid && $webSecondaryPort) {
-	  my $webPort = $webSecondaryPort;
-	  $aMaillog = "<a class=secondary href=\"http://$webhost:$webPort/maillog\" data-tip=\"On Secondary: $webPort\">View Maillog Tail</a>";
+	  my $wp = $webSecondaryPort;
+	  $aMaillog = "<a class=secondary href=\"http://$webhost:$wp/maillog\" data-tip=\"On Secondary: $wp\">View Maillog Tail</a>";
 	}
   }
 
@@ -32089,11 +32092,11 @@ EOT
 
 sub ShutdownList {
   my $action = $qs{action};
-  my ( $s1, $s2, $editButtons, $query, $refresh );
+  my ( $s2, $editButtons, $query, $refresh );
   my $nocache = $qs{nocache};
   my $showcolor = $qs{showcolor} ? 1 : 0;
   my $forceRefresh = $qs{forceRefresh};
-  my $rowclass;
+  my $row;
   my $shutdownDelay = 2;
   my %conperwo = ();
   my $key;
@@ -32110,10 +32113,8 @@ sub ShutdownList {
 	function noop(){};
 ';
   $focusJS .= $forceRefresh
-	? '	function tStop(){ Run = 1 };
-'
-	: '	function tStop(){ Run = 0; Timer = setTimeout("noop()",3000) };
-';
+	? "	function tStop(){ Run = 1 };\n"
+	: "	function tStop(){ Run = 0; Timer = setTimeout('noop()',3000) };\n";
 
   $focusJS .= '
 	//	noprint
@@ -32143,32 +32144,10 @@ sub ShutdownList {
 		setcolor();
 	}
 	//	endnoprint
-</script>
-';
+</script>';
   $refresh = 1;
-  $query   = '?nocache';
-
-  $s1 = $smtpConcurrentSessions > 0
-	? ( $smtpConcurrentSessions > 1 ? 'There are' : 'There is' )
-	  . needEs($smtpConcurrentSessions,' SMTP session','s') .' active.'
-	: 'There are no active SMTP sessions.';
-
-  $s2 = "<thead>
-<tr>
-<th># TLS</th>
-<th>Remote IP</th>
-<th>HELO</th>
-<th>From</th>
-<th>Rcpt</th>
-<th>CMD</th>
-<th>RY/NP/WL</th>
-<th>SPAM</th>
-<th>Bytes</th>
-<th>Duration</th>
-<th>Idle</th>
-</tr>
-</thead>
-<tbody>\n";
+  $query = '?nocache';
+  $s2 = '';
 
   my $tmpTimeNow = time();
 
@@ -32199,47 +32178,37 @@ sub ShutdownList {
 	  $bgcolor = ' style="background-color:#FF'.$cc.'00;"' if $Con{$key}->{messagescore} > 0;
 	  $bgcolor = ' style="background-color:#FF0000;"' if $Con{$key}->{spamfound};
 
-	  if ($tmpCount % 2 == 1) {
-		$rowclass = "\n<tr class=odd$bgcolor>";
-	  } else {
-		$rowclass = "\n<tr$bgcolor>";
-	  }
+	  my $ssl = $Con{$key}->{ssl} . $Con{$key}->{friendssl};
+	  $ssl = " $ssl" if $ssl;
+	  $row = "<td><b>$tmpCount$ssl</b></td>\n"
 
-	  $s2 .= $rowclass
-		."<td $bgcolor><b>"
-		  . ( $tmpCount ) .' '. $Con{$key}->{ssl}.$Con{$key}->{friendssl}
-		  ."</b></td>/n"
-
-		."<td $bgcolor>". (
+		."<td>". (
 		  (! $Con{$key}->{relayok} )
-#			? ("<span onclick=\"popIPAction('". &normHTML($Con{$key}->{ip})
-#			  ."');\" onmouseover=\"linkBG=this.style.backgroundColor; this.style.backgroundColor='#BBBBFF';\" onmouseout=\"this.style.backgroundColor=linkBG;\"><b>"
-#			  . $Con{$key}->{ip} ."<\/b><\/span>")
-
 			? "<b class=ip>". $Con{$key}->{ip} ."</b>"
 			: $Con{$key}->{ip}
-		  ) ."</td>/n"
+		  ) ."</td>\n"
 
-		."<td $bgcolor>". substr( $Con{$key}->{helo}, 0, 25 ) ."</td>\n"
+		."<td>". substr( $Con{$key}->{helo}, 0, 25 ) ."</td>\n"
 
-		."<td $bgcolor>". (
+		."<td>". (
 		  (! $Con{$key}->{relayok} )
-#			? ("<span onclick=\"popAddressAction('". &encHTMLent($Con{$key}->{mailfrom})
-#			  ."');\" onmouseover=\"linkBG=this.style.backgroundColor; this.style.backgroundColor='#BBBBFF';\" onmouseout=\"this.style.backgroundColor=linkBG;\"><b>"
-#                      . substr( $Con{$key}->{mailfrom}, 0, 25 )
-#                      . "<\/b><\/span>")
 			? "<b class=email>". $Con{$key}->{mailfrom} ."</b>"
 			: substr( $Con{$key}->{mailfrom}, 0, 25 )
-		  ) ."</td>/n"
+		  ) ."</td>\n"
 
-		."<td $bgcolor>". substr( $Con{$key}->{rcpt}, 0, 25 ) ."</td>\n"
-		."<td $bgcolor>". $Con{$key}->{lastcmd} ."</td>\n"
-		."<td $bgcolor>". $relay ."</td>\n"
-		."<td $bgcolor>". (($Con{$key}->{spamfound}) ? 'Y' : 'N') . $tmpScore ."</td>\n"
-		."<td $bgcolor>". $Con{$key}->{maillength} ."</td>\n"
-		."<td $bgcolor>". $tmpDuration ."</td>\n"
-		."<td $bgcolor>". $tmpInactive ."</td>\n"
-		."</tr>\n";
+		."<td>". substr( $Con{$key}->{rcpt}, 0, 25 ) ."</td>\n"
+		."<td>". $Con{$key}->{lastcmd} ."</td>\n"
+		."<td>". $relay ."</td>\n"
+		."<td>". (($Con{$key}->{spamfound}) ? 'Y' : 'N') . $tmpScore ."</td>\n"
+		."<td>". $Con{$key}->{maillength} ."</td>\n"
+		."<td>". $tmpDuration ."</td>\n"
+		."<td>". $tmpInactive ."</td>\n";
+
+	  if ($tmpCount % 2) {
+		$s2 .= "<tr class=\"line odd\"$bgcolor>\n$row</tr>\n";
+	  } else {
+		$s2 .= "<tr class=\"line\"$bgcolor>\n$row</tr>\n";
+	  }
 	}
   }
   $showcolor = $showcolor ? 'color-off' : 'color-on';
@@ -32250,7 +32219,7 @@ $headerHTML5
 <html lang=en>
 <head>
 <meta charset=utf-8 />
-<title>$currentPage ASSP ($myName) this monitor will slow down ASSP dramaticly - use it careful</title>
+<title>$currentPage ASSP ($myName)</title>
 <style>\@import "get?file=images/assp.css";</style>
 <script src=\"get?file=images/cosmos.js\"></script>
 <script src=\"get?file=images/assp.js\"></script>
@@ -32258,24 +32227,44 @@ $headerHTML5
 
 <body onfocus="tStart()" onblur="tStop()">
 <main class=content>
+<h4 class=east>This monitor will slow down ASSP dramatically, use it carefully</h4>
+<h1>SMTP Connections List</h1>
+
+<div class="summary clearfix">
 <div class=controls>
 <time>$ctime</time>
 <button type=button id=stasto onclick="startstop()"> Stop </button>
 <button type=button onclick=self.close()> Close </button>
 </div>
-
-<h1>SMTP Connections List</h1>
-<div class=summary>
-$s1
+<div>
+Active SMTP sessions: $smtpConcurrentSessions
 </div>
+</div>
+
 <hr />
 
 <table id=conTable class=connections cellspacing=0>
+<thead>
+<tr>
+<th># TLS</th>
+<th>Remote IP</th>
+<th>HELO</th>
+<th>From</th>
+<th>Rcpt</th>
+<th>CMD</th>
+<th>RY/NP/WL</th>
+<th>SPAM</th>
+<th>Bytes</th>
+<th>Duration</th>
+<th>Idle</th>
+</tr>
+</thead>
+<tbody>
 $s2
 </tbody>
 </table>
 </main>
-</body>$focusJS</html>
+</body>$focusJS<script src="get?file=images/assp-init.js"></script></html>
 EOT
 }
 
