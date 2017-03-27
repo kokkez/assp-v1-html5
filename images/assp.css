@@ -61,6 +61,12 @@ h2, h3, h4, h5, h6 {
 p {
 	margin				: 0 0 1em;
 }
+input[type="checkbox"],
+input[type="radio"] {
+	position			: relative;
+	top					: 2px;
+}
+
 footer.links {
 	line-height			: 2;
 	color				: #666;
@@ -267,26 +273,28 @@ label[for="trigger"] {
 .content fieldset {
 	font-size			: 11px;
 	color				: #444;
-	background			: rgba(0,0,0,.03);
+	background			: rgba(0,0,0,.01);
 	border				: none;
-	box-shadow			: 1px 1px 4px 0 rgba(0,0,0,.5);
-	padding				: 1ex;
-	margin				: 0 0 1em;
+	box-shadow			: 1px 1px 3px 1px rgba(0,0,0,.5);
+	padding				: 0;
+	margin				: 0 0 1rem;
+}
+.content fieldset.grid {
+	padding				: 6px 9px;
 }
 .content legend {
 	float				: left;
 	width				: 100%;
-	padding				: 0;
+	background			: rgba(0,0,0,.08);
+	padding				: 6px 9px;
 }
 .content legend h2 {
-	color				: #36c;
 	text-shadow			: 1px 1px 0 #fff;
-	border-bottom		: 2px solid #ddd;
 }
 .content fieldset ul {
 	clear				: left;
 	list-style			: none;
-	padding				: 0;
+	padding				: 0 9px;
 	margin				: 0;
 }
 .content .camp {
@@ -366,6 +374,7 @@ td.push					{ padding: 0 0 0 1rem; }
 .parameters section {
 	float				: left;
 	width				: 30%;
+	padding				: 6px 9px;
 }
 .parameters section + section {
 	margin				: 0 0 0 2rem;
