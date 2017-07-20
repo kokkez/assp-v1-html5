@@ -576,10 +576,7 @@ For this reason all sync peers must have a direct or routed TCP connection to ea
 ['enableINET6','Enable IPv6 support',0,\&checkbox,'','(.*)','ConfigChangeIPv6','For IPv6 network support to be enabled, check this box. Default is disabled. IO::Socket::INET6 is able to handle both IPv4 and IPv6. NOTE: This option requires an installed IO::Socket::INET6 module in PERL and your system should support IPv6 sockets.<br />
   Before you enable or disable IPv6, please check every IP listener and destination definition in assp and correct the settings. <span class=negative>Changing this requires a restart of ASSP!</span> IPv4 addresses are defined for example 192.168.0.1 or 192.168.0.1:25 - IPv6 addresses are defined like [FE80:1:0:0:0:0:0:1]:25 or [FE80:1::1]:25 ! If an IPv4 address is defined for a listener, assp will listen only on the IPv4 socket. If an IPv6 address is defined for a listener, assp will listen only on the IPv6 socket. If only a port is defined for a listener, assp will listen on both IPv4 and IPv6 sockets.<br />
   ',undef,undef,'msg009480','msg009481'],
-['smtpDestinationRT','SMTP Destination Routing Table*',120,\&textinput,'','(\S*)','configChangeRT',
-  'If INBOUND is used in the SMTP Destination field, the rules specified here are used to route the inbound IP address to a different outbound IP address. You must specify a port number with the outbound IP address. This feature works by assigning as many IP addresses to ASSP as you have different receiving Mailservers.
-  <p><small><i>Example:</i>141.120.110.1=>141.120.110.129:25|141.120.110.2=>141.120.110.130:125|141.120.110.3=>141.120.110.130:125</small></p><span class=negative> requires ASSP restart</span>
-<hr /><div class="menuLevel1">Notes On Network Setup</div><input type="button" value="Notes" onclick="javascript:popFileEditor(\'notes/network.txt\',3);" />'],
+['smtpDestinationRT','SMTP Destination Routing Table*',120,\&textinput,'','(\S*)','configChangeRT','If INBOUND is used in smtpDestination, the rules specified here are used to route the inbound IP address to a different outbound IP address. You must specify a port number with the outbound IP address. This feature works by assigning as many IP addresses to ASSP as you have different receiving Mailservers. <b class=negative>Requires ASSP restart</b>.<h4>Example:</h4><code>141.120.110.1=>141.120.110.129:25|141.120.110.2=>141.120.110.130:125|141.120.110.3=>141.120.110.130:125</code><hr /><button type=button data-path=notes/network.txt data-note=3> Notes On Network Setup </button>'],
 
 [0,0,0,'heading','SMTP Session Limits'],
 
@@ -615,9 +612,7 @@ For this reason all sync peers must have a direct or routed TCP connection to ea
 ['smtpNOOPIdleTimeout','SMTP Idle Timeout after NOOP',10,\&textinput,0,'(\d?\d?\d?\d?)',undef,
  'The number of seconds a session is allowed to be idle after a "NOOP" command is received, before being forcibly disconnected. No limit is imposed by ASSP if the field is left blank or set to 0.<br />
   This should prevent hackers to hold and block connections by sending "NOOP" commands short before the "smtpIdleTimeout" is reached.'],
-['smtpNOOPIdleTimeoutCount','SMTP Idle Timeout after NOOP Count',10,\&textinput,0,'(\d?\d?)',undef,
- 'The number of counts a session is allowed send "NOOP" commands following on each other, before being forcibly disconnected. No limit is imposed by ASSP if the field is left blank or set to 0.<br />
-  This in cooperation with "smtpNOOPIdleTimeout" should prevent hackers to hold and block connections by sending repeatedly "NOOP" commands short before the "smtpNOOPIdleTimeout" is reached. If "smtpNOOPIdleTimeout" is not defined or 0, this value will be ignored!<hr /><div class="menuLevel1">Notes On SMTP Session Limits</div><input type="button" value="Notes" onclick="javascript:popFileEditor(\'notes/sessionlimits.txt\',3);" />'],
+['smtpNOOPIdleTimeoutCount','SMTP Idle Timeout after NOOP Count',10,\&textinput,0,'(\d?\d?)',undef,'The number of times a session is allowed send "NOOP" commands following on each other, before being forcibly disconnected. No limit is imposed by ASSP if the field is left blank or set to 0. This in cooperation with smtpNOOPIdleTimeout should prevent hackers to hold and block connections by sending repeatedly "NOOP" commands short before the smtpNOOPIdleTimeout is reached. If smtpNOOPIdleTimeout is not defined or 0, this value will be ignored!<hr /><button type=button data-path=notes/sessionlimits.txt data-note=3> Notes On SMTP Session Limits </button>'],
 
 [0,0,0,'heading','SPAM Control/Testmode <a href="https://sourceforge.net/p/assp/wiki/Getting_Started/" target=wiki><img src="'. $wikiinfo .'" /></a>'],
 
@@ -2027,24 +2022,8 @@ For example: resendmail. This requires an installed Email::Send module in PERL.'
   'ASSP closes and renames the log file after this number of days.'],
 ['MaxLogAge','Max Age of Logfiles',10,\&textinput,60,'(\d+)',undef,
   'The maximum file age in days of logfiles. If a logfile is older than this number in days, the file will be deleted. A value of 0 disables this feature and no logfile will be deleted because of its age.'],
-['LogNameDate','Date Format in LogfileName',120,\&textinput,'YY-MM-DD','(.*)',undef,'Use this option to set the date-format in the logfile-name. The default value is \'YY-MM-DD\'. The following replacements will be done:<br />
- YYYY - year four digits<br />
- YY - year two digits<br />
- MMM - month three characters - like Oct Nov Dec<br />
- MM - month numeric two digits<br />
- DD - day numeric two digits<br />
- DDD - day three characters - like Mon Tue Fri'],
-['LogDateFormat','Date/Time Format in LogDate',120,\&textinput,'MMM-DD-YY hh:mm:ss','((?:(?:MM|MMM|DD|DDD|YY|YYYY)(?:[\_\-\. ]|)){3}(?:[\-\_ ]*)(?:(?:hh|mm|ss)(?:[\.:\-\_]|)){3})',undef,'Use this option to set the logdate. The default value is \'MMM-DD-YY hh:mm:ss\'. The following (case sensitive !) replacements will be done:<br /><br />
- YYYY - year four digits<br />
- YY - year two digits<br />
- MMM - month three characters - like Oct Nov Dec<br />
- MM - month numeric two digits<br />
- DDD - day three characters - like Mon Tue Fri<br />
- DD - day numeric two digits<br />
- hh - hour two digits<br />
- mm - minute two digits<br />
- ss - second two digits<br /><br />
- <span class=positive>A value has to be defined for every part of the date/time. Allowed separators in date part are \'_ -.\' - in time part \'-_.:\' .</span>'],
+['LogNameDate','Date Format in LogfileName',120,\&textinput,'YY-MM-DD','(.*)',undef,'Use this option to set the format of the date in the name of the logfile. The default value is "YY-MM-DD". Allowed separators are: "<code>_ -.</code>". The following case sensitive replacements will be done:<ul><li><code>YYYY</code> - year, 4 digits</li><li><code>YY</code> - year, 2 digits</li><li><code>MMM</code> - month string, 3 characters: <code>Oct Nov Dec</code></li><li><code>MM</code> - month numeric, 2 digits</li><li><code>DDD</code> - day string, 3 characters: <code>Mon Tue Fri</code></li><li><code>DD</code> - day numeric, 2 digits</li></ul>'],
+['LogDateFormat','Date/Time Format in LogDate',120,\&textinput,'MMM-DD-YY hh:mm:ss','((?:(?:MM|MMM|DD|DDD|YY|YYYY)(?:[\_\-\. ]|)){3}(?:[\-\_ ]*)(?:(?:hh|mm|ss)(?:[\.:\-\_]|)){3})',undef,'Use this option to set the the format of the date and time of every line in the logfile. The default value is "MMM-DD-YY hh:mm:ss". <span class=negative>A value must be defined for every segment</span>. Allowed separators in date part are: "<code>_ -.</code>"; in time part are: "<code>-_.:</code>". The same replacements of LogNameDate will be done, case sensitive, plus:<ul><li><code>hh</code> - hour, 2 digits</li><li><code>mm</code> - minute, 2 digits</li><li><code>ss</code> - second, 2 digits</li></ul>'],
 ['LogDateLang','Date/Time Language','0:English|1:FranÁais|2:Deutsch|3:EspaÒol|4:PortuguÍs|5:Nederlands|6:Italiano|7:Norsk|8:Svenska|9:Dansk|10:suomi|11:Magyar|12:polski|13:Romaneste',\&listbox,0,'(.*)',undef,
   'Select the language for the day and month if LogDateFormat contains DDD and/or MMM.',undef,undef,'msg008700','msg008701'],
 ['enableWORS','Windows Output Record Separator',0,\&checkbox,'','(.*)','ConfigChangeWors',
@@ -27922,39 +27901,42 @@ sub ConfigLists {
 		else {
 			my $color = $qs{list} eq 'red' ? 'Red' : 'White';
 			my $list = $color ."list";
+			my $cleaneds = '';
 			while ($qs{addresses} =~ /($EmailAdrRe\@$EmailDomainRe'?)(?:(,(?:$EmailAdrRe\@$EmailDomainRe'?)|\*))?/go) {
-				$a = $1;
-				$s .= "<div class=text>$a ";
-				$a = lc $a;
+				$a = lc $1;
+				$a =~ s/^[\s'"]+|[\s'"]+$//g;
+				$cleaneds .= $a ."\n";
+				my $o = "";
 				if ( $act eq 'v' ) {
 					if ( $list->{$a} ) {
-						$s .= "${color}listed";
+						$o .= " ${color}listed";
 					} else {
-						$s .= "<span class=negative>NOT $qs{list}listed</span>";
+						$o .= " <span class=negative>NOT $qs{list}listed</span>";
 					}
 				} elsif ( $act eq 'a' ) {
 					if ( $list->{$a} ) {
-						$s .= "<span class=positive>already $qs{list}listed</span>";
+						$o .= " <span class=positive>already $qs{list}listed</span>";
 					} else {
 						if($color eq 'White' && localmail($a)) {
-							$s.="<span class=negative>local addresses not allowed on whitelist</span>";
+							$o.=" <span class=negative>local addresses not allowed on whitelist</span>";
 						} else {
-							$s .= "added";
 							$list->{$a} = time;
 							mlog(0,"AdminInfo: $qs{list}list addition: $a (admin)");
+							$o .= " added";
 						}
 					}
 				} elsif ( $act eq 'r' ) {
 					if ( $list->{$a} ) {
-						$s .= "removed";
 						delete $list->{$a};
 						mlog(0,"AdminInfo: $qs{list}list deletion: $a (admin)");
+						$o .= " removed";
 					} else {
-						$s .= "not $qs{list}listed";
+						$o .= " not $qs{list}listed";
 					}
 				}
-				$s .= "</div>\n";
+				$s .= "<div class=text>$a$o</div>\n";
 			}
+			$qs{addresses} = $cleaneds;
 		}
 	}
 	if ( $qs{B1} =~ /^Show (.)/i ) {
@@ -32290,30 +32272,33 @@ sub SaveConfig {
 	}
   }
   foreach my $c (sort keys %ConfigAdd) {
-    if (exists $cryptConfigVars{$c}) {
-        my $var = $enc->ENCRYPT($ConfigAdd{$c});
-        print $SC "$c:=$var\n";
-    } else {
-        print $SC "$c:=$ConfigAdd{$c}\n";
-    }
+	if (exists $cryptConfigVars{$c}) {
+	  my $var = $enc->ENCRYPT($ConfigAdd{$c});
+	  print $SC "$c:=$var\n";
+	} else {
+	  print $SC "$c:=$ConfigAdd{$c}\n";
+	}
   }
   print $SC "ConfigSavedOK:=1\n";
   close $SC;
 
   if (open($SC, '<', "$base/assp.cfg")) {
-    my $current = (<$SC>);
-    close $SC;
-    if ($current eq $content) {
-      mlog(0,"info: no configuration changes detected - nothing to save - file $base/assp.cfg is unchanged");
-      return;
-    }
+	my $current = (<$SC>);
+	close $SC;
+	if ($current eq $content) {
+	  mlog(0,"info: no configuration changes detected - nothing to save - file $base/assp.cfg is unchanged");
+	  return;
+	}
   } else {
-    mlog(0,"warning: unable to read the current config in $base/assp.cfg");
+	mlog(0,"warning: unable to read the current config in $base/assp.cfg");
   }
 
-  unlink("$base/assp.cfg.bak.bak.bak") or mlog(0,"error: unable to delete file $base/assp.cfg.bak.bak.bak - $!");
-  rename("$base/assp.cfg.bak.bak","$base/assp.cfg.bak.bak.bak") or mlog(0,"error: unable to rename file $base/assp.cfg.bak.bak to $base/assp.cfg.bak.bak.bak - $!");
-  rename("$base/assp.cfg.bak","$base/assp.cfg.bak.bak") or mlog(0,"error: unable to rename file $base/assp.cfg.bak to $base/assp.cfg.bak.bak - $!");
+  unlink("$base/assp.cfg.bak.bak.bak")
+	or mlog(0,"error: unable to delete file $base/assp.cfg.bak.bak.bak - $!");
+  rename("$base/assp.cfg.bak.bak","$base/assp.cfg.bak.bak.bak")
+	or mlog(0,"error: unable to rename file $base/assp.cfg.bak.bak to $base/assp.cfg.bak.bak.bak - $!");
+  rename("$base/assp.cfg.bak","$base/assp.cfg.bak.bak")
+	or mlog(0,"error: unable to rename file $base/assp.cfg.bak to $base/assp.cfg.bak.bak - $!");
   $FileUpdate{"$base/assp.cfgasspCfg"} = 0;
 
   open($SC,'>',"$base/assp.cfg.tmp");
@@ -32321,13 +32306,16 @@ sub SaveConfig {
   close $SC;
   mlog(0,"info: saved config to $base/assp.cfg.tmp - which is now renamed to $base/assp.cfg");
 
-  rename("$base/assp.cfg","$base/assp.cfg.bak") or mlog(0,"error: unable to rename file $base/assp.cfg to $base/assp.cfg.bak - $!");
-  rename("$base/assp.cfg.tmp","$base/assp.cfg") or mlog(0,"error: unable to rename file $base/assp.cfg.tmp to $base/assp.cfg - $!");
+  rename("$base/assp.cfg","$base/assp.cfg.bak")
+	or mlog(0,"error: unable to rename file $base/assp.cfg to $base/assp.cfg.bak - $!");
+  rename("$base/assp.cfg.tmp","$base/assp.cfg")
+	or mlog(0,"error: unable to rename file $base/assp.cfg.tmp to $base/assp.cfg - $!");
   $asspCFGTime = $FileUpdate{"$base/assp.cfgasspCfg"} = ftime("$base/assp.cfg");
   mlog(0,"finished saving config",1);
 }
 
-sub textinput {my ($name,$nicename,$size,$func,$default,$valid,$onchange,$description,$klass,$note,$lngNice,$lngDesc)=@_;
+sub textinput {
+  my ($name,$nicename,$size,$func,$default,$valid,$onchange,$description,$klass,$note,$lngNice,$lngDesc) = @_;
   my $Error = checkUpdate( $name, $valid, $onchange, $nicename);
   my $value = encodeHTMLEntities( $Config{$name} );
   my $hdefault = encodeHTMLEntities($default);
