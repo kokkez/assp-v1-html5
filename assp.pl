@@ -159,17 +159,17 @@ $HeaderRe=qr/(?:$HeaderNameRe:$HeaderValueRe)/o;
 $UUENCODEDRe=qr/\bbegin\b \d\d\d \b\S{0,72}.*?\S{61}.{0,61}\bend\b/o;
 $NONPRINT = qr/[\x00-\x1F\x7F-\xFF]/o;
 $notAllowedSMTP = qr/CHUNKING|PIPELINING|XEXCH50|
-                     SMTPUTF8|UTF8REPLY|
-                     UTF8SMTP|UTF8SMTPA|UTF8SMTPS|UTF8SMTPAS|
-                     UTF8LMTP|UTF8LMTPA|UTF8LMTPS|UTF8LMTPAS|
-                     XCLIENT|XFORWARD|
-                     TURN|ATRN|ETRN|TURNME|X-TURNME|XTRN|
-                     SEND|SOML|SAML|EMAL|ESAM|ESND|ESOM|
-                     XAUTH|XQUE|XREMOTEQUEUE|
-                     X-EXPS|X-ADAT|X-DRCP|X-ERCP|EVFY|
-                     8BITMIME|BINARYMIME|BDAT|
-                     AUTH GSSAPI|AUTH NTLM|X-LINK2STATE
-                  /oix;
+	SMTPUTF8|UTF8REPLY|
+	UTF8SMTP|UTF8SMTPA|UTF8SMTPS|UTF8SMTPAS|
+	UTF8LMTP|UTF8LMTPA|UTF8LMTPS|UTF8LMTPAS|
+	XCLIENT|XFORWARD|
+	TURN|ATRN|ETRN|TURNME|X-TURNME|XTRN|
+	SEND|SOML|SAML|EMAL|ESAM|ESND|ESOM|
+	XAUTH|XQUE|XREMOTEQUEUE|
+	X-EXPS|X-ADAT|X-DRCP|X-ERCP|EVFY|
+	8BITMIME|BINARYMIME|BDAT|
+	AUTH GSSAPI|AUTH NTLM|X-LINK2STATE
+	/oix;
 # IP Address representations
 my $sep;
 my $v6Re = '[0-9A-Fa-f]{1,4}';
@@ -177,13 +177,23 @@ $IPSectRe = '(?:25[0-5]|2[0-4]\d|1\d\d|0?\d?\d)';
 $IPSectHexRe = '(?:(?:0x)?(?:[A-Fa-f][A-Fa-f0-9]?|[A-Fa-f0-9]?[A-Fa-f]))';
 
 # private IP addresses
-$IPprivate  = '(?:0{1,3}\.0{1,3}\.0{1,3}\.0{1,3}|127(?:\.'.$IPSectRe.'){3}|169\.254(?:\.'.$IPSectRe.'){2}|0?10(?:\.'.$IPSectRe.'){3}|192\.168(?:\.'.$IPSectRe.'){2}|172\.0?1[6-9](?:\.'.$IPSectRe.'){2}|172\.0?2[0-9](?:\.'.$IPSectRe.'){2}|172\.0?3[01](?:\.'.$IPSectRe.'){2})';   #RFC 1918 decimal
-$IPprivate .= '|(?:(?:0x)?0{1,2}\.(?:0x)?0{1,2}\.(?:0x)?0{1,2}\.(?:0x)?0{1,2}|(?:0x)?7[Ff](?:\.'.$IPSectHexRe.'){3}|(?:0x)?[aA]9\.(?:0x)?[Ff][Ee](?:\.'.$IPSectHexRe.'){2}|(?:0x)?0[aA](?:\.'.$IPSectHexRe.'){3}|(?:0x)?[Cc]0\.(?:0x)?[Aa]8(?:\.'.$IPSectHexRe.'){2}|(?:0x)[Aa][Cc]\.(?:0x)1[0-9a-fA-F](?:\.'.$IPSectHexRe.'){2})';   #RFC 1918 Hex
-$IPprivate .= '|(?:0{0,4}:){2,6}'.$IPprivate;  # private IPv4 in IPv6
-$IPprivate .= '|(?:0{0,4}::|(?:0{1,4}:){7}|(?:0{1,4}:){1,6}:)1';  # IPv6 loopback
-$IPprivate .= '|::';  # IPv6 universal local
+$IPprivate  = '(?:0{1,3}\.0{1,3}\.0{1,3}\.0{1,3}|127(?:\.'
+	. $IPSectRe .'){3}|169\.254(?:\.'. $IPSectRe .'){2}|0?10(?:\.'
+	. $IPSectRe .'){3}|192\.168(?:\.'. $IPSectRe .'){2}|172\.0?1[6-9](?:\.'
+	. $IPSectRe .'){2}|172\.0?2[0-9](?:\.'. $IPSectRe .'){2}|172\.0?3[01](?:\.'
+	. $IPSectRe .'){2})';		#RFC 1918 decimal
+$IPprivate .= '|(?:(?:0x)?0{1,2}\.(?:0x)?0{1,2}\.(?:0x)?0{1,2}\.(?:0x)?0{1,2}|(?:0x)?7[Ff](?:\.'
+	. $IPSectHexRe .'){3}|(?:0x)?[aA]9\.(?:0x)?[Ff][Ee](?:\.'
+	. $IPSectHexRe .'){2}|(?:0x)?0[aA](?:\.'
+	. $IPSectHexRe .'){3}|(?:0x)?[Cc]0\.(?:0x)?[Aa]8(?:\.'
+	. $IPSectHexRe .'){2}|(?:0x)[Aa][Cc]\.(?:0x)1[0-9a-fA-F](?:\.'
+	. $IPSectHexRe .'){2})';	#RFC 1918 Hex
+$IPprivate .= '|(?:0{0,4}:){2,6}'. $IPprivate;	# private IPv4 in IPv6
+$IPprivate .= '|(?:0{0,4}::|(?:0{1,4}:){7}|(?:0{1,4}:){1,6}:)1';	# IPv6 loopback
+$IPprivate .= '|::';	# IPv6 universal local
 
-$IPloopback = '^(?:127(?:\.'.$IPSectRe.'){3}|(?:0{0,4}::|(?:0{1,4}:){7}|(?:0{1,4}:){1,6}:)1)$'; # IPv4 and IPv6 loopback interfaces
+$IPloopback = '^(?:127(?:\.'
+	. $IPSectRe .'){3}|(?:0{0,4}::|(?:0{1,4}:){7}|(?:0{1,4}:){1,6}:)1)$';	# IPv4 and IPv6 loopback interfaces
 
 $IPQuadSectRE='(?:0([0-7]+)|0x([0-9a-fA-F]+)|(\d+))';
 $IPQuadSectDotRE='(?:'.$IPQuadSectRE.'\.)';
@@ -593,7 +603,7 @@ For this reason all sync peers must have a direct or routed TCP connection to ea
   No limit is imposed by ASSP if the field is left blank or set to 0. This option allows admins to prevent external brute force or dictionary attacks via AUTH command. Whitelisted, NPexcludeIPs and NoProcessing IP\'s are ignored like any relayed connection.',undef,undef,'msg009310','msg009311'],
 ['noMaxAUTHErrorIPs','Do not check MaxAUTHErrors for these IP\'s*',120,\&textinput,'','(\S*)','ConfigMakeIPRe','List of IP\'s which should not be checked for MaxAUTHErrors .  For example: 145.145.145.145|145.146.',undef,undef,'msg009580','msg009581'],
 ['maxSMTPSessions','Maximum Sessions',10,\&textinput,64,'(\d?\d?\d?)',undef,'The maximum number of simultaneous SMTP sessions. This can prevent server overloading and DoS attacks. 64 simultaneous sessions are typically enough. No entry or zero means no limit.'],
-['noMaxSMTPSessions','No Maximum Sessions IP addresses*',120,\&textinput,'','(.*)','ConfigMakeIPRe','Mail from any of these IP addresses and Hostnames will pass through without checking maximum number of simultaneous SMTP sessions. For example: localhost|145.145.145.145'],
+['noMaxSMTPSessions','No Maximum Sessions IP addresses*',120,\&textinput,'','(.*)','ConfigMakeIPRe','Mail from any of these IP addresses and Hostnames will pass through without checking maximum number of simultaneous SMTP sessions.<h4>Examples:</h4><code>localhost|145.145.145.145</code>'],
 ['maxSMTPipSessions','Maximum Sessions Per IP address',10,\&textinput,5,'(\d?\d?\d?)',undef,
   'The maximum number of SMTP sessions allowed per IP address. Use this setting to prevent server overloading and DoS attacks. 5 sessions are typically enough. If left blank or set to 0 there is no limit imposed by ASSP. acceptAllMail (Accept All Mail) matches are excluded from SMTP session limiting. Scoring is done  with iplValencePB.'],
 ['iplValencePB','IP Parallel Sessions Score, default=5 +',10,\&textinput,5,'(\s*[\d]+\s*([\|,]\s*[\d]+\s*){0,1})','ConfigChangeValencePB', 'Message/IP scoring',undef,undef,'msg002820','msg002821'],
@@ -632,12 +642,9 @@ For this reason all sync peers must have a direct or routed TCP connection to ea
  'Adds a line to the email header if the message is spam. For example: <a href="http://exchangepedia.com/blog/2008/01/assigning-scl-to-messages-scanned-by.html">X-Spam-Status:yes</a>'],
 ['AddIPHeader','Add IP Match Header',0,\&checkbox,'','(.*)',undef,'Add X-Assp- header for all IP matches.',undef],
 ['AddRegexHeader','Add  RegEx Match Header',0,\&checkbox,'','(.*)',undef,''],
-['AddIntendedForHeader','Add Intended-For Header for Recipients','1:first recipient|2:multiple recipients',\&listbox,1,'(.*)',undef,
-  '<br /><hr /><div class="menuLevel1">Notes On RWL</div><input type="button" value="Notes" onclick="javascript:popFileEditor(\'notes/rwl.txt\',3);" />'],
-['AddSubjectHeader','Add X-ASSP-Original-Subject Header',1,\&checkbox,'','(.*)',undef,
- 'Adds a line to the email header "X-ASSP-Original-Subject: the subject".',undef,undef,'msg000300','msg000301'],
-['AddSpamReasonHeader','Add Spam Reason Header',0,\&checkbox,1,'(.*)',undef,
- 'Adds a line to the email header "X-Assp-Spam-Reason: " explaining why the message is spam.<br /><hr /><div class="menuLevel1">Notes On Spam Control</div><input type="button" value="Notes" onclick="javascript:popFileEditor(\'notes/spamcontrol.txt\',3);" />'],
+['AddIntendedForHeader','Add Intended-For Header for Recipients','1:first recipient|2:multiple recipients',\&listbox,1,'(.*)',undef,'Set the behavior of the mail header: <code>X-Assp-Intended-For:</code>'],
+['AddSubjectHeader','Add X-ASSP-Original-Subject Header',1,\&checkbox,'','(.*)',undef,'Adds a line to the email header "X-ASSP-Original-Subject: the subject".',undef,undef,'msg000300','msg000301'],
+['AddSpamReasonHeader','Add Spam Reason Header',0,\&checkbox,1,'(.*)',undef,'Adds a line to the email header "X-Assp-Spam-Reason:" explaining why the message is spam.<hr /><button type=button data-path=notes/spamcontrol.txt data-note=3> Notes On Spam Control </button>'],
 ['NoExternalSpamProb','No Outgoing X-ASSP Header',0,\&checkbox,'','(.*)',undef,
 'Check this box if you don\'t want X-Assp- headers on outgoing mail.'],
 ['noGriplistUpload','Don\'t Upload Griplist Stats',0,\&checkbox,'','(.*)',undef,
@@ -647,35 +654,22 @@ For this reason all sync peers must have a direct or routed TCP connection to ea
 ['GriplistDownloadNow','Run GriplistDownload Now',0,\&checkbox,'','(.*)','ConfigChangeRunTaskNow', "If selected, ASSP will download the Griplist right away. <input type=button value=\"Run Now!\" onclick=\"document.forms['ASSPconfig'].theButtonX.value='Apply Changes';document.forms['ASSPconfig'].submit();WaitDiv();return false;\" />&nbsp;<input type=button value=\"Refresh Browser\" onclick=\"document.forms['ASSPconfig'].theButtonRefresh.value='Apply Changes';document.forms['ASSPconfig'].submit();WaitDiv();return false;\" />"],
 ['noGRIP','Don\'t do Griplist for these IP addresses and Hostnames* ',120,\&textinput,'','(.*)','ConfigMakeIPRe',
  'Enter IP addresses and Hostnames that you don\'t want to get gripvalues from. For example:server.example.com|145.145.145.145|145.146.','','7'],
-['DoFullGripDownload','Full Griplist Download Period',10,\&textinput,30,'(\S*)',undef,
- 'The Global Griplist is downloaded once in full, then only deltas are downloaded each day subsequently.  This option forces a new full download after this many days.  Leave it blank to not force new full downloads. Recommended: 30 days.<br /><hr /><div class="menuLevel1">Notes On Griplist</div><input type="button" value="Notes" onclick="javascript:popFileEditor(\'notes/griplist.txt\',3);" />'],
+['DoFullGripDownload','Full Griplist Download Period',10,\&textinput,30,'(\S*)',undef,'The Global Griplist is downloaded once in full, then only deltas are downloaded each day subsequently. This option forces a new full download after this many days. Leave it blank to not force new full downloads. Recommended: 30 days.<hr /><button type=button data-path=notes/griplist.txt data-note=3> Notes On Griplist </button>'],
 
 [0,0,0,'heading','SPAM Lovers'],
 
-['spamLovers','All Spam-Lover*',120,\&textinput,'postmaster|abuse','(.*)','ConfigMakeSLReSL',
- 'Messages to Spam-Lovers are processed and filtered by ASSP, but get tagged with spamSubject and are not blocked. Recipients here are tagged by all filters. If you want spamlovers for selected filters use: baysSpamLovers, blSpamLovers. bombSpamLovers, hlSpamLovers, atSpamLovers, spfSpamLovers, rblSpamLovers, uriblSpamLovers, srsSpamLovers, mxaSpamLovers, ptrSpamLovers, sbSpamLovers.  When a
- Spam-Lover is not the sole recipient of a message, the message is processed
- normally, and if it is found to be spam, it will not be delivered to the
- Spam-Lover. delaySpamLovers are not included here and must be set additionally. Accepts specific addresses (user@domain.com), user parts (user) or entire domains (@domain.com). Wildcards are supported (fribo*@domain.com). Default: postmaster|abuse.<br />For example: fribo*@thisdomain.com|jhanna|@sillyguys.org
- <hr>
- This option and all SpamLover-Options below are accepting a second score parameter like "user@your-domain.com=>70"<br />
- If such a parameter is defined in any option for an entry and the recipient address matches this entry and the message score exceeds the parameter value, the message will be blocked.<br />
- If there are multiple possible matches for a recipient address found, the generic longest match (and value) will be used.'],
-['spamLoverSubjectSelected','Suppress SpamSubject For Selected Recipients*',120,\&textinput,'ALL','(.*)','ConfigMakeSLRe','spamSubject does NOT get prepended to the subject for these recipients. To enable the selection you need to uncheck spamSubjectSL.'],
-['SpamLoverTag','SpamLover Tag',40,\&textinput,'[sl]','(.*)',undef,,''],
-['SpamLoversRe','Regular Expression to Identify  SpamLovers*',120,\&textinput,'','(.*)','ConfigCompileRe',
-'If a message matches this regular expression it will not been blocked, but tagged.'],
-['slMaxScore','Block Spamlover Messages Above This Score',10,\&textinput,90,'(.*)',undef,
- 'Messages to spamLovers  whose score exceeds this threshold will be blocked.'],
+['spamLovers','All Spam-Lover *',120,\&textinput,'postmaster|abuse','(.*)','ConfigMakeSLReSL','Messages to SpamLovers will be processed and filtered by ASSP, tagged with spamSubject and not blocked. Recipients here are tagged by all filters and need to be local addresses only. It is possible to set SpamLovers for specific filters, using: baysSpamLovers, blSpamLovers, bombSpamLovers, hlSpamLovers, atSpamLovers, spfSpamLovers, rblSpamLovers, uriblSpamLovers, srsSpamLovers, mxaSpamLovers, ptrSpamLovers, sbSpamLovers. Note that delaySpamLovers are not included here, and must be set additionally. Moreover, when a SpamLover is not the sole recipient of a message, the message will be processed normally, and if it is found to be spam, it will not be delivered to the SpamLover.<br /><br />All of these SpamLovers options can accept a second parameter, the score: <code>user@your-domain.com=>70</code>. If such a parameter is defined, and the recipient address matches this entry, and the message score exceeds the parameter value, the message will be blocked. If there are multiple possible matches found for a recipient address, the generic longest match (and value) will be used.<br /><br />Can be set specific addresses: <code>user@domain.com</code>, user parts: <code>user</code> or entire domains: <code>@domain.com</code>. Wildcards are supported: <code>fribo*@domain.com</code>.<h4>Examples:</h4><code>fribo*@thisdomain.com|jhanna|@sillyguys.org</code>'],
+['spamLoverSubjectSelected','Suppress SpamSubject For Selected Recipients *',120,\&textinput,'ALL','(.*)','ConfigMakeSLRe','For these recipients the subject does NOT get prepended with spamSubject. To enable this option the spamSubjectCC need to be unchecked.'],
+['SpamLoverTag','SpamLover Tag',40,\&textinput,'[sl]','(.*)',undef,,'The SpamLover tag. This value can be prepended to the Subject of the message.'],
+['SpamLoversRe','Regular Expression to Identify SpamLovers *',120,\&textinput,'','(.*)','ConfigCompileRe','If a message matches this regular expression it will not been blocked, but tagged with SpamLoverTag prepended to the Subject of the message.'],
+['slMaxScore','Block Spamlover Messages Above This Score',10,\&textinput,90,'(.*)',undef,'Messages to spamLovers whose score exceeds this threshold will be blocked.'],
 
 [0,0,0,'heading','NoProcessing'],
 
-['npSize','Incoming Messages NoProcessing Size',10,\&textinput,1000000,'(.*)',undef,'This limit ensures that only incoming messages smaller than this limit are processed by ASSP. Most spam
-isn\'t bigger than a few k. ASSP will treat incoming messages larger than this SIZE (in bytes) as \'NoProcessing\' mail. Empty or 0 disables the feature.'],
+['npSize','Incoming Messages NoProcessing Size',10,\&textinput,1000000,'(.*)',undef,'This limit ensures that only incoming messages smaller than this limit are processed by ASSP. Most spam isnt bigger than a few kb. ASSP will treat incoming messages larger than this SIZE (in bytes) as noProcessing mail. Empty or 0 disables the feature.'],
 ['noProcessingIPs','NoProcessing IPs*',120,\&textinput,'file:files/ipnp.txt','(.*)','ConfigMakeIPRe','Mail from any of these IP addresses and Hostnames will pass through without processing. Example file:<a href=http://assp.cvs.sourceforge.net/viewvc/assp/asspV1/files/ipnp.txt target=files ><span class=positive> ipnp.txt</a>','','7'],
 ['NPexcludeIPs','Exclude these IPs from noProcessingIPs *',120,\&textinput,'','(.*)','ConfigMakeIPRe','Manually maintained list of IP addresses and Hostnames which should be excluded from noProcessingIPs.'],
-['noProcessing','NoProcessing Addresses*',120,\&textinput,'','(.*)','ConfigMakeSLRe',
- 'Contains addresses of sender and recipients. You can specify addresses for recipients only by using noProcessingTo, addresses for sender only should be put into noProcessingFrom. Accepts specific addresses (user@example.com), user parts (user) or entire domains (@example.com).  Wildcards are supported (fribo*@example.com). <span class=positive>Better to use noProcessingFrom and noProcessingTo instead.'],
+['noProcessing','NoProcessing Addresses*',120,\&textinput,'','(.*)','ConfigMakeSLRe','<span class=positive>Better to use noProcessingFrom and noProcessingTo instead</span>.<br />Contains addresses of sender and recipients. You can specify addresses for recipients only by using noProcessingTo, addresses for sender only should be put into noProcessingFrom. Accepts specific addresses (user@example.com), user parts (user) or entire domains (@example.com). Wildcards are supported (fribo*@example.com).'],
 ['noProcessingFrom','NoProcessing Sender*',120,\&textinput,'file:files/noprocessingfrom.txt','(.*)','ConfigMakeSLRe',
  'Mail from any of these addresses are proxied without processing. Accepts specific addresses (user@example.com), user parts (user) or entire domains (@example.com).  Wildcards are supported (fribo*@example.com).'],
 ['noProcessingTo','NoProcessing Recipients*',120,\&textinput,'file:files/noprocessingto.txt','(.*)','ConfigMakeSLRe',
@@ -683,9 +677,8 @@ isn\'t bigger than a few k. ASSP will treat incoming messages larger than this S
 ['removeForeignBCC','remove Foreign BCC',0,\&checkbox,'','(.*)',undef,'Remove foreign BCC: header lines from the mail header. The remove is done before the DoHeaderAddrCheck is done!',undef,undef,'msg009780','msg009781'],
 ['noProcessingDomains','NoProcessing Domains*',120,\&textinput,'file:files/noprocessingdomains.txt','(.*)','ConfigMakeRe',
  'Domains from which you want to receive all mail and  proxy without processing. Your ISP, domain registration, mail list servers, stock broker, or other key business partners might be good candidates. Note this matches the end of the address, so if you don\'t want to match subdomains then include the @. Note that buy.com would also match spambuy.com but .buy.com won\'t match buy.com. For example: sourceforge.net|@google.com|.buy.com','','1'],
-['noNoProcessing','Do not mark these Addresses as Noprocessing*',120,\&textinput,'','(.*)','ConfigMakeSLRe','Enter senders email addresses that you want to be processed, even if they are in noprocessing lists. You can list specific addresses (user@anydomain.com), addresses at any domain (user), or entire domains (@anydomain.com).  Wildcards are supported (fribo*@domain.com).<br />For example: fribo@anydomain.com|jhanna|@sillyguys.org or place them in a plain ASCII file one address per line: \'file:files/nodelayuser.txt\'.'],
-['npRe','Regular Expression to Identify NoProcessing Incoming Mails*',120,\&textinput,'','(.*)','ConfigCompileRe',
- 'If a message matches this Perl regular expression ASSP will treat the message as a \'NoProcessing\' mail. For example: X-Assp-Version<br /><hr /><div class="menuLevel1">Notes On NoProcessing</div><input type="button" value="Notes" onclick="javascript:popFileEditor(\'notes/noprocessing.txt\',3);" />'],
+['noNoProcessing','Do not mark these Addresses as Noprocessing *',120,\&textinput,'','(.*)','ConfigMakeSLRe','Enter addresses that needs to be processed, even if they are in noprocessing lists. Can accept specific addresses: <code>user@anydomain.com</code>, user parts: <code>user</code>, entire domains: <code>@anydomain.com</code>. Wildcards are supported: <code>fribo*@domain.com</code>.<h4>Examples:</h4><code>user@anydomain.com|fribo*@domain.com|jhanna|@sillyguys.org</code><div>plain ASCII file one address per line: <code>file:files/nonoprocessingaddresses.txt</code></div>'],
+['npRe','Regular Expression to Identify NoProcessing Incoming Mails *',120,\&textinput,'','(.*)','ConfigCompileRe','If an email matches this regular expression ASSP will treat the message as a noProcessing mail.<h4>Examples:</h4><code>x-assp-version</code><hr /><button type=button data-path=notes/noprocessing.txt data-note=3> Notes On NoProcessing </button>'],
 
 [0,0,0,'heading','Whitelist/Redlist'],
 
@@ -926,7 +919,7 @@ You can set nolocalDomains to disable this check during setup and testing.', 'pr
 ['blSpamLovers','Blacklisted Domains Spam-Lover*',120,\&textinput,'','(.*)','ConfigMakeSLReSL','',undef,undef,'msg000540','msg000541'],
 ['noBlackDomain','Don\'t do Blacklisted for these Addresses and Domains* ',120,\&textinput,'','(.*)','ConfigMakeSLRe',
  ' Accepts specific addresses (user@example.com), user parts (user) or entire domains (@example.com). Wildcards are supported (fribo*@example.com).'],
-['weightedAddresses','Fuzzy Addresses** ',120,\&textinput,'file:files/blackAddresses.txt','(.*)','ConfigMakeSLRe',' Accepts (<b class=negative>blackish</b> and <b class=positive>whitish</b> addresses (user@example.com), user parts (user) or entire domains (@example.com). Wildcards are supported. A positive weight will make the address \'blackish\'. A negative weight will make the address into \'whitish\'.</span> For example:<div>fribo*@example.com|<code class=positive>@*.gov=>-0.5</code><code>|@*.biz=>0.5</code></div> .'],
+['weightedAddresses','Fuzzy Addresses** ',120,\&textinput,'file:files/weightedaddresses.txt','(.*)','ConfigMakeSLRe',' Accepts (<b class=negative>blackish</b> and <b class=positive>whitish</b> addresses (user@example.com), user parts (user) or entire domains (@example.com). Wildcards are supported. A positive weight will make the address \'blackish\'. A negative weight will make the address into \'whitish\'.</span> For example:<div>fribo*@example.com|<code class=positive>@*.gov=>-0.5</code><code>|@*.biz=>0.5</code></div> .'],
 
 [0,0,0,'heading','Message Size'],
 
@@ -965,12 +958,13 @@ If multiple matches (values) are found in a mail for any IP address in the trans
 ['DoSameSubject','Check Number of Same Subjects','0:disabled|1:block|2:monitor|3:score',\&listbox,3,'(.*)',undef,'Scoring is done  with isValencePB.'],
 ['isValencePB','Subject Frequency Score, default=150 +',10,\&textinput,150,'(\s*[\d]+\s*([\|,]\s*[\d]+\s*){0,1})','ConfigChangeValencePB', 'Message/IP scoring',undef,undef,'msg010030','msg010031'],
 ['SameSubjectOnly','Check SameSubject for these Users only*',120,\&textinput,'','(.*)','ConfigMakeSLRe','Skip SameSubject Check for these local addresses. <br />Accepts specific addresses (user@domain.com), user parts (user) or entire domains (@domain.com).  Wildcards are supported (fribo*@domain.com).<br />For example: fribo*@thisdomain.com|jhanna|@sillyguys.org ',undef,undef,'msg010070','msg010071'],
-['SameSubjectSkipRe','Skip SameSubject Check for this Regex*',120,\&textinput,'Mail delivery failed|itunes|Returned to Sender|Delivery Status Notification|List-Unsubscribe|Newsletter','(.*)','ConfigCompileRe','Skip SameSubject Check for this regular expression. If the content of the email matches this regular expression , DoSameSubject will not be done. For example: \'Mail delivery failed|itunes|Returned to Sender|Delivery Status Notification|Re:$|List-Unsubscribe|Newsletter\' .'],
+['SameSubjectSkipRe','Skip SameSubject Check for this Regex*',120,\&textinput,'Mail delivery failed|itunes|Returned to Sender|Delivery Status Notification|List-Unsubscribe|Newsletter','(.*)','ConfigCompileRe','Accept a single regular expression, not a file with a list of Regex. If the value of the Subject of the email matches this regular expression, DoSameSubject will not be done.<h4>For example:</h4><code>Mail delivery failed|itunes|Returned to Sender|Delivery Status Notification|Re:\s*$|List-Unsubscribe|Newsletter</code>'],
 ['SameSubjectNoAddresses','Skip SameSubject Check for these Users*',120,\&textinput,'','(.*)','ConfigMakeSLRe','A list of local addresses, for which the \'SameSubject Check\' should not be done.<br />Accepts specific addresses (user@domain.com), user parts (user) or entire domains (@domain.com).  Wildcards are supported (fribo*@domain.com).<br />For example: fribo*@thisdomain.com|jhanna|@sillyguys.org ',undef,undef,'msg010080','msg010081'],
 ['SameSubjectNoIP','Skip SameSubject Check for these IP\'s*',120,\&textinput,'','(\S*)','ConfigMakeIPRe','Mail from these IP numbers will pass through without SameSubject check. For example: 145.145.145.145',undef,undef,'msg010090','msg010091'],
 ['SameSubjectInterval','SameSubject Interval',10,\&textinput,3600,'(\d*)',undef,'The time interval in seconds in which the number of same subjects should not exceed a specific limit ( SameSubjectNumber ).<br />Use this in combination with SameSubjectNumber to limit the number of same subjects in a given interval. A value of 0  will disable this feature '],
-['SameSubjectExpiration','SameSubject Expiration',10,\&textinput,360,'(\d*)',undef,'The time in days in which found same subjects should be kept in cache.<br /><input type="button" value="SameSubject Cache" onclick="javascript:popFileEditor(\'pb/pbdb.samesubject.db\',\'1h\');" />',undef,undef,'msg010050','msg010051'],
-['SameSubjectNumber','SameSubject Limit',10,\&textinput,5,'(\d*)',undef,'The number of same subjects that should not be exceeded in a specific time interval ( SameSubjectIntervalerval ).<br />Use this in combination with SameSubjectInterval to limit the number of same subjects in a given interval. A value of 0 (default) will disable this feature and clean the cache within five minutes.<br /><input type="button" value="SameSubject Cache" onclick="javascript:popFileEditor(\'pb/pbdb.samesubject.db\',\'1h\');" />',undef,undef,'msg010060','msg010061'],
+['SameSubjectExpiration','SameSubject Expiration',10,\&textinput,360,'(\d*)',undef,'The number of days to keep in cache the same subjects founds ',undef,undef,'msg010050','msg010051'],
+['SameSubjectNumber','SameSubject Limit',10,\&textinput,5,'(\d*)',undef,'The number of same subjects, used in combination with SameSubjectInterval, to limit the quantity of same subjects in the given interval. A value of 0 (default) will disable this feature and clean the cache within five minutes.
+<hr /><button type=button data-path=pb/pbdb.samesubject.db data-note=1h> SameSubject Cache </button>',undef,undef,'msg010060','msg010061'],
 
 [0,0,0,'heading','Spoofing'],
 
@@ -1559,9 +1553,8 @@ onclick="javascript:popFileEditor(\'notes/viruscheck.txt\',3);"/>'],
  Use this regular expression to identify such incoming mails based on a line per line check, at the moment where a single line is received.<br />
 If a match is found and preHeaderCollect not set, assp will immediately send a \'421 <myName> closing transmission\' reply to the client and will immediately terminate the connection. If preHeaderCollect is not set ASSP will try to store the mail in Spam-folder.'],
 ['maxBombValence','Maximum Score on Regex Match per Mail per Check',10,\&textinput,70,'(.*)',undef, 'This option is valid for all regex searches which allow weights (marked with **) and limits the maximum penalty per check. maxBombHits is overwritten. If not set the search will stop if MessageScoringUpperLimit or maxBombHits is reached. For example: 70'],
-['maxBombHits','Maximum Number Of Hits in Regex Search*',120,\&textinput,'blackRe=>3|bombSubjectRe=>3|bombSuspiciousRe=>3|bombRe=>3','(.*)','ConfigMakeRe', 'This option is valid for all regex searches which allow weights (marked with **). Use the syntax: regextype=>3|other.regextype=>3 to overwrite the maximum number of hits a regexsearch should perform. Default for regex searches are \'blackRe=>3|bombSenderRe=>1|bombHeaderRe=>1|bombSubjectRe=>3|bombCharSets=>1|bombSuspiciousRe=>3|bombRe=>3\'. The search will stop if MessageScoringUpperLimit or maxBombHits is reached. This can be overwritten by maxBombValence.'],
-['DoBlackRe','Use Black Regular Expression to Identify Spam','0:disabled|1:block|2:monitor|3:score|4:testmode',\&listbox,1,'(.*)',undef,
-  'This works similar to DoBombRe but has different default in noprocessing. Envelope, Header and Data Part are checked  against the BlackRe. Scoring is done  with blackValencePB - the Valence is the sum of all valences(weights) of all found blackRe(s). Blocking will only be done if \'block\' is set  (default) and the messagescore is equal or exceeds blackValencePB.  '],
+['maxBombHits','Maximum Number Of Hits in Regex Search*',120,\&textinput,'blackRe=>3|bombSenderRe=>1|bombHeaderRe=>1|bombSubjectRe=>3|bombCharSets=>1|bombSuspiciousRe=>3|bombRe=>3','(.*)','ConfigMakeRe', 'This option is valid for all regex searches which allow weights (marked with **). Use the syntax: regextype=>3|other.regextype=>3 to overwrite the maximum number of hits a regexsearch should perform. Default for regex searches are \'blackRe=>3|bombSenderRe=>1|bombHeaderRe=>1|bombSubjectRe=>3|bombCharSets=>1|bombSuspiciousRe=>3|bombRe=>3\'. The search will stop if MessageScoringUpperLimit or maxBombHits is reached. This can be overwritten by maxBombValence.'],
+['DoBlackRe','Use Black Regular Expression to Identify Spam','0:disabled|1:block|2:monitor|3:score|4:testmode',\&listbox,1,'(.*)',undef,'This works similar to DoBombRe but has different default in noprocessing. Envelope, Header and Data Part are checked against the BlackRe. Scoring is done with blackValencePB - the Valence is the sum of all valences(weights) of all found blackRe(s). Blocking will only be done if \'block\' is set  (default) and the messagescore is equal or exceeds blackValencePB.  '],
 ['blackRe','Black Regular Expressions to Identify Spam ** ',120,\&textinput,'file:files/blackre.txt','(.*)','ConfigCompileRe',
   'This is a stricter version of bombRe (blackReNP, blackReISPIP are enabled by default). If an incoming email matches this expression it will be considered spam. The expressions here will work as in  <a href="http://www.enginsite.com/Library-Perl-Regular-Expressions-Tutorial.htm" target=wiki><img height=12 width=12 src="' . $wikiinfo . '" alt="Perl-Regular-Expressions-Tutorial" />Regular Expressions</a> As all fields marked with two asterisk (**) do - this  regular expressions (regex) can accept a weight value. Every weighted regex has to be followed by \'=>\' and the weight value. The search will continue until maxBombHits is reached or maxBombValence is exceeded (if set). Newest example file:<a href=http://assp.cvs.sourceforge.net/viewvc/assp/asspV1/files/blackre.txt target=files ><span class=negative>blackre.txt</a>'],
 ['blackValencePB','Bomb Black Expression Score, default=40 +',10,\&textinput,40,'(\s*[\d]+\s*([\|,]\s*[\d]+\s*){0,1})','ConfigChangeValencePB', 'Message/IP scoring',undef,undef,'msg002690','msg002691'],
@@ -1872,11 +1865,7 @@ For example: resendmail. This requires an installed Email::Send module in PERL.'
 ',undef,undef,'msg009100','msg009101'],
 ['griplist','GReyIPlist Database',120,\&textinput,'griplist','(\S*)',undef,'The file with the current GRey-IP-List  database -- make this blank if you don\'t use it.',undef,undef,'msg005730','msg005731'],
 ['gripValencePB','GRIP value Score (+ if > 0.9,- if < 0.1), default=5',10,\&textinput,5,'(\d+)','ConfigChangeValencePB', 'Message scoring',undef,undef,'msg002980','msg002981'],
-['myhost','MySQL hostname or IP',120,\&textinput,'','(\S*)',undef,
-  'You need <a
-  href="http://search.cpan.org/~lds/Tie-DBI-1.02/lib/Tie/RDBM.pm"
-  rel="external">Tie::RDBM</a> to use MySQL instead of local files.<br />
-  This way you can share whitelistdb, delaydb and redlistdb between servers if "mysql" is written into their file-path.'],
+['myhost','MySQL hostname or IP',120,\&textinput,'','(\S*)',undef,'You need <a href="http://search.cpan.org/~lds/Tie-DBI-1.02/lib/Tie/RDBM.pm" rel="external">Tie::RDBM</a> to use MySQL instead of local files.<br />This way you can share whitelistdb, delaydb and redlistdb between servers if "mysql" is written into their file-path.'],
 ['mydb','MySQL database name',120,\&textinput,'','(\S*)',undef,
   'This database must exist before starting ASSP,
   necessary tables will be created automatically into this database'],
@@ -1887,12 +1876,12 @@ For example: resendmail. This requires an installed Email::Send module in PERL.'
   'Blank if you don\'t want a log file. Change it to maillog.log if you don\'t want auto rollover.
   NOTE: Changing this field requires restarting ASSP before changes take effect.'],
 ['pidfile','PID File',120,\&textinput,'pid','(\S*)',undef,'Blank to skip writing a pid file. *nix users need pid files.
-<br /> You have to restart assp before you get a pid file in the new location.<br /><hr /><div class="menuLevel1">Notes On File Path</div><input type="button" value="Notes" onclick="javascript:popFileEditor(\'notes/filepath.txt\',3);" />'],
+<br />You have to restart assp before you get a pid file in the new location.<br />
+<hr /><button type=button data-path=notes/filepath.txt data-note=3> Notes On File Path </button>'],
 
 [0,0,0,'heading','Copy Spam/Ham'],
 
-['sendAllSpam','Copy Spam and Send to this Address',120,\&textinput,'','(.*)',undef,
- 'ASSP will deliver a copy of spam emails to this address if the collection mode in the collection section is set to do so (eg. baysSpamLog ). For example: spammonitor@example.com. The address can be different depending on the recipient. The literal USERNAME (case sensitive) is replaced by the user part of the recipient, the literal DOMAIN (case sensitive) is replaced by the domain part of the recipient. For example: USERNAME@Spam.DOMAIN, USERNAME+Spam@DOMAIN, spammonitor@DOMAIN','prime'],
+['sendAllSpam','Copy Spam and Send to this Address',120,\&textinput,'','(.*)',undef,'Accept one single email address, where ASSP will deliver a copy of spam emails, if the collection mode is set to do so (eg. baysSpamLog ). The address can be different depending on the recipient. The literal USERNAME (case sensitive) will be replaced by the user part of the recipient. The literal DOMAIN (case sensitive) will be replaced by the domain part of the recipient.<h4>Examples:</h4><code>spammonitor@example.com, USERNAME@spam.DOMAIN, USERNAME+spam@DOMAIN, spammonitor@DOMAIN</code>','prime'],
 ['sendAllDiscard','Copy Discarded and Send to sendAllSpam',0,\&checkbox,1,'(.*)',undef,
  'ASSP will deliver a copy of discard emails to sendAllSpam'],
 ['ccSpamInDomain','Copy Spam and Send to this Address per Domain*',120,\&textinput,'','(.*)','configUpdateCCD',
@@ -2303,9 +2292,7 @@ For example: resendmail. This requires an installed Email::Send module in PERL.'
   To use this feature, you have to install the perl script "assp_pop3.pl" in the assp-base directory.',undef,undef,'msg009070','msg009071'],
 ['POP3Interval','POP3 Collecting Interval',10,\&textinput,0,'(\d+)',undef,'The interval in minutes, assp should collect messages from the configured POP3-servers. A value of zero disables this feature.'],
 ['POP3KeepRejected','POP3 Keep Rejected Mails on POP3 Server',0,\&checkbox,'','(.*)',undef, 'If selected, any collected POP3 mail that fails to be sent via SMTP will be kept on the POP3 server.'],
-['POP3debug','POP3 debug',0,\&checkbox,'','(.*)',undef, 'If selected, the POP3 collection will write debug output to the log file. Do not use it, unless you have problems with the POP3 collection!
-  <div class="menuLevel1">Notes On POP3 collecting</div>
-  <input type="button" value="Notes" onclick="javascript:popFileEditor(\'notes/pop3collect.txt\',3);" />',undef,undef,'msg009090','msg009091'],
+['POP3debug','POP3 debug',0,\&checkbox,'','(.*)',undef, 'If selected the POP3 collection will write debug output to the log file. Do not use it, unless you have problems with the POP3 collection!<hr /><button type=button data-path=notes/pop3collect.txt data-note=3> Notes On POP3 collecting </button>',undef,undef,'msg009090','msg009091'],
 
 [0,0,0,'heading','Extras'],
 
@@ -3822,14 +3809,14 @@ $lngmsghint{'msg500018'} = '# main form buttom hint 8';
 $lngmsg{'msg500018'} = <<EOT;
 <h1>Legend</h1>
 <p>
-Fields marked with at least one asterisk (*) accept a list separated by pipe ( <code>'|'</code> ), for example: <code>abc|def|ghi</code>, or a file with path relative to the ASSP directory ( <b>$base</b> ), designated as follows: <code>file:files/filename.txt</code>.
-Putting in the <b>file:</b> will prompt ASSP to put up a button to edit that file, <b>files/</b> is the subdirectory for files. The file does not need to exist, you can create it by saving it from the editor within the UI. The file must have one entry per line, anything on a line following a numbersign or a semicolon ( # ; ) is ignored, as it is treated as a comment.
+Fields marked with at least one asterisk `<code>*</code>` accept a list separated by pipe `<code>|</code>`, for example: `<code>abc|def|ghi</code>`, or a file with path relative to the ASSP directory `<code>$base</code>`, designated as follows: `<code>file:files/filename.txt</code>`.
+Putting in the `<code>file:</code>` will prompt ASSP to put up a button to edit that file, `<code>files/</code>` is the subdirectory for files. The file does not need to exist, you can create it by saving it from the editor within the UI. The file must have one entry per line, anything on a line following a numbersign or a semicolon `<code># ;</code>` is ignored, as it is treated as a comment.
 <br />
-It is possible to include custom-designed files at any line of such a file, using the following directive: <code class=positive># include filename</code>, where <b>filename</b> is the relative path, from <b>$base</b>, to the included file, like: <code>files/inc1.txt</code> or <code>inc1.txt</code> (one file per line). The line will be internaly replaced by the contents of the included file.
+It is possible to include custom-designed files at any line of such a file, using the following directive: `<code class=positive># include filename</code>`, where `<code>filename</code>` is the relative path, from `<code>$base</code>`, to the included file, like: `<code>files/inc1.txt</code>` or `<code>inc1.txt</code>` (one file per line). The line will be internaly replaced by the contents of the included file.
 </p>
 <hr />
 <p>
-Fields marked with two asterisk (**) contains regular expressions (regex) and accept a second weight value. Every weighted regex that contains at least one <code>'|'</code> has to begin and end with a tilde ( <code>'~'</code> ). Inside such regexes it is not allowed to use the <code>'~'</code>, even it is escaped, for example:
+Fields marked with two asterisk `<code>**</code>` contains regular expressions (RegEx) and accept a second weight value. Every weighted regex that contains at least one `<code>|</code>` has to begin and end with a tilde `<code>~</code>`. Inside such regexes it is not allowed to use the `<code>~</code>`, even it is escaped, for example:
 <br />
 <code>~abc<b class=negative>\\~</b>|def~=>23 or ~abc<b class=negative>~</b>|def~=>23</code>
 <br />
@@ -4366,21 +4353,22 @@ $placeholder
 # reply echos server messages to the client
 # reply also looks for a 235 AUTH OK and sets {relayok}=1
 sub serviceCheck { }
-sub d            {
-$debugprint = $_[0];
-return; }
+sub d {
+	$debugprint = $_[0];
+	return;
+}
 
 -d "$base/debug" or mkdir "$base/debug", 0755;
 if ($debug && !$AsASecondary) {
-    my $fn = localtime();
-     $fn =~ s/^... (...) +(\d+) (\S+) ..(..)/$1-$2-$4-$3/;
-     $fn =~ s/[\/:]/-/g;
-    open( $DEBUG, '>' ,"$base/debug/" . $fn . ".dbg" );
-    binmode($DEBUG);
-    my $oldfh = select($DEBUG);
-    $| = 1;
-    select($oldfh);
-  }
+	my $fn = localtime();
+	$fn =~ s/^... (...) +(\d+) (\S+) ..(..)/$1-$2-$4-$3/;
+	$fn =~ s/[\/:]/-/g;
+	open( $DEBUG, '>' ,"$base/debug/". $fn .".dbg" );
+	binmode($DEBUG);
+	my $oldfh = select($DEBUG);
+	$| = 1;
+	select($oldfh);
+}
 
 eval(
     q[sub d {
@@ -4426,14 +4414,14 @@ $logdir = $1 if $logfile =~ /(.*)\/.*/;
 -d "$base/$logdir" or mkdir "$base/$logdir", 0755 if $logdir;
 
 if (! $silent) {
-      if ($ConsoleCharset) {
-          binmode STDOUT, ":encoding($ConsoleCharset)";
-          binmode STDERR, ":encoding($ConsoleCharset)";
-      } else {
-          binmode STDOUT;
-          binmode STDERR;
-      }
-  }
+	if ($ConsoleCharset) {
+		binmode STDOUT, ":encoding($ConsoleCharset)";
+		binmode STDERR, ":encoding($ConsoleCharset)";
+	} else {
+		binmode STDOUT;
+		binmode STDERR;
+	}
+}
 
 &init();
 
@@ -4459,11 +4447,9 @@ $SIG{'__WARN__'} = sub { warn $_[0] if (!($AsADaemon || $AsAService) && $_[0] !~
 $lastTimeoutCheck = time;
 
 eval {
-    while (1)
-
-    {
-        &MainLoop;
-    }
+	while (1) {
+		&MainLoop;
+	}
 };
 
 if ($@) {
@@ -6030,80 +6016,71 @@ sub switchUsers {
 }
 
 sub MainLoop {
-    my $timeout;
-    my $entrytime = Time::HiRes::time();
+	my $timeout;
+	my $entrytime = Time::HiRes::time();
 
-    eval {
-    local $SIG{ALRM} =
-    sub { die "mainloop_timeout\n" };    # NB: \n required
-    $timeout = 180;
-    $timeout = $MainloopTimeout if $MainloopTimeout > 180;
-    alarm $timeout;
-    my $wait = 5; # keep it short enough for servicecheck to be called regularly
-    my $stime =
-      $CanStatCPU ? ( Time::HiRes::time() ) : time;    # loop cycle start time
-    my ( $canread, $canwrite ) =
-      IO::Select->select( $readable, $writable, undef, $wait );
-    my $itime =
-      $CanStatCPU ? ( Time::HiRes::time() ) : time;   # loop cycle idle end time
-    my $ntime = $CanStatCPU ? 0.3 : 1;
-    $webTime   = 0;             # loop cycle web time interval, global var
-    $nextLoop2 = $itime + 1;
+	eval {
+		local $SIG{ALRM} = sub { die "mainloop_timeout\n" };		# NB: \n required
+		$timeout   = 180;
+		$timeout   = $MainloopTimeout if $MainloopTimeout > 180;
+		alarm $timeout;
+		my $wait   = 5; # keep it short enough for servicecheck to be called regularly
+		my $stime  = $CanStatCPU ? ( Time::HiRes::time() ) : time;	# loop cycle start time
+		my ( $canread, $canwrite ) = IO::Select->select( $readable, $writable, undef, $wait );
+		my $itime  = $CanStatCPU ? ( Time::HiRes::time() ) : time;	# loop cycle idle end time
+		my $ntime  = $CanStatCPU ? 0.3 : 1;
+		$webTime   = 0;		# loop cycle web time interval, global var
+		$nextLoop2 = $itime + 1;
 
-    # AZ: 2009-02-05 - signal service status
-    if ( $SvcStopping != 0 ) {
-      serviceCheck();
-      return;
-    }
-    foreach my $fh (@$canwrite) {
-        my $l = length( $Con{$fh}->{outgoing} );
-        d("canwrite $fh $Con{$fh} l=$l paused=$Con{$fh}->{paused} ip=$Con{$fh}->{ip}");
+		# AZ: 2009-02-05 - signal service status
+		if ( $SvcStopping != 0 ) {
+			serviceCheck();
+			return;
+		}
+		foreach my $fh (@$canwrite) {
+			my $l = length( $Con{$fh}->{outgoing} );
+			d("canwrite $fh $Con{$fh} l=$l paused=$Con{$fh}->{paused} ip=$Con{$fh}->{ip}");
 
-        if ($l) {
-            $fh->blocking(0) if $fh->blocking;
-            my $written;
-            eval {
-                local $SIG{ALRM} =
-                sub { die "syswrite_timeout\n" };    #
+			if ($l) {
+				$fh->blocking(0) if $fh->blocking;
+				my $written;
+				eval {
+					local $SIG{ALRM} =
+					sub { die "syswrite_timeout\n" };    #
+					alarm 60;
+					$written = syswrite( $fh, $Con{$fh}->{outgoing}, $OutgoingBufSizeNew );
+					alarm 0;
+				};
+				#exception check
+				if ($@) {
+					alarm 0;
+					mlog( 0, "mainloop exception: $@", 1, 1 );
+				}
+				$Con{$fh}->{outgoing} = substr( $Con{$fh}->{outgoing}, $written );
+				$l = length( $Con{$fh}->{outgoing} );
 
-                alarm 60;
-                $written =
-                      syswrite( $fh, $Con{$fh}->{outgoing}, $OutgoingBufSizeNew );
-                  alarm 0;
-              };
-            #exception check
-            if ($@) {
-                alarm 0;
-
-                mlog( 0, "mainloop exception: $@", 1, 1 );
-
-            }
-            $Con{$fh}->{outgoing} = substr( $Con{$fh}->{outgoing}, $written );
-            $l = length( $Con{$fh}->{outgoing} );
-
-            # test for highwater mark
-            if (   $written > 0
-                && $l < $OutgoingBufSizeNew
-                && $Con{$fh}->{paused} )
-            {
-                $Con{$fh}->{paused} = 0;
-                $readable->add( $Con{$fh}->{friend} );
-            }
-            if ($Con{$fh}->{type} ne 'C' &&
-                        $written > 0 &&
-                        $Con{$fh}->{friend} &&
-                        exists $Con{$Con{$fh}->{friend}} &&
-                        $Con{$Con{$fh}->{friend}}->{lastcmd} =~ /^ *(?:DATA|BDAT)/io )
-            {
-                $Con{$Con{$fh}->{friend}}->{writtenDataToFriend} +=         $written;
-            }
-        }
-        if ( length( $Con{$fh}->{outgoing} ) == 0 ) {
-            $writable->remove($fh);
-        }
-
-        done2($fh) if $Con{$fh}->{closeafterwrite};
-    }
+				# test for highwater mark
+				if ($written > 0
+					&& $l < $OutgoingBufSizeNew
+					&& $Con{$fh}->{paused} )
+				{
+					$Con{$fh}->{paused} = 0;
+					$readable->add( $Con{$fh}->{friend} );
+				}
+				if ($Con{$fh}->{type} ne 'C' &&
+					$written > 0 &&
+					$Con{$fh}->{friend} &&
+					exists $Con{$Con{$fh}->{friend}} &&
+					$Con{$Con{$fh}->{friend}}->{lastcmd} =~ /^ *(?:DATA|BDAT)/io )
+				{
+					$Con{$Con{$fh}->{friend}}->{writtenDataToFriend} += $written;
+				}
+			}
+			if ( length( $Con{$fh}->{outgoing} ) == 0 ) {
+				$writable->remove($fh);
+			}
+			done2($fh) if $Con{$fh}->{closeafterwrite};
+		}
     foreach my $fh (@$canread) {
         d("canread  $fh $Con{$fh}");
         if ( $fh && $SocketCalls{$fh} ) {
@@ -10955,44 +10932,37 @@ sub getline {
 
 ############################################ ##############################
 
-         if ($EnableSRS &&
-            $CanUseSRS  &&
-            $this->{relayok} &&
-            ! localmail($this->{mailfrom}) &&
-            $this->{mailfrom} !~ $BSRE &&
-            ! ($SRSno && $this->{mailfrom} && matchSL($this->{mailfrom},'SRSno')))
-            {
+		if ($EnableSRS &&
+			$CanUseSRS  &&
+			$this->{relayok} &&
+			! localmail($this->{mailfrom}) &&
+			$this->{mailfrom} !~ $BSRE &&
+			! ($SRSno && $this->{mailfrom} && matchSL($this->{mailfrom},'SRSno')))
+		{
+			# rewrite sender addresses when relaying through Relay Host
+			my $tmpfrom;
+			$this->{prepend} = "[SRS]";
+			my $srs = new Mail::SRS(
+				Secret => $SRSSecretKey,
+				MaxAge => $SRSTimestampMaxAge,
+				HashLength => $SRSHashLength,
+				AlwaysRewrite => 1
+			);
+			if (
+				!eval { $tmpfrom = $srs->reverse( $this->{mailfrom} ) }
+				&& eval {
+					$tmpfrom = $srs->forward( $this->{mailfrom}, $SRSAliasDomain );
+				})
+			{
+				mlog($fh,"SRS rewriting sender '$this->{mailfrom}' into '$tmpfrom'", 1);
+				$l =~ s/\Q$this->{mailfrom}\E/$tmpfrom/;
+				# $this->{mailfrom} = $tmpfrom;	# kokkez 2018-03
+			} else {
+				mlog($fh,"SRS rewriting sender '$this->{mailfrom}' failed!", 1);
+			}
+		}
 
-            # rewrite sender addresses when relaying through Relay Host
-            my $tmpfrom;
-            $this->{prepend} = "[SRS]";
-            my $srs = new Mail::SRS(
-                Secret        => $SRSSecretKey,
-                MaxAge        => $SRSTimestampMaxAge,
-                HashLength    => $SRSHashLength,
-                AlwaysRewrite => 1
-            );
-            if (
-                !eval { $tmpfrom = $srs->reverse( $this->{mailfrom} ) }
-                && eval {
-                    $tmpfrom =
-                      $srs->forward( $this->{mailfrom}, $SRSAliasDomain );
-                }
-              )
-            {
-                mlog(
-                    $fh,
-                    "SRS rewriting sender '$this->{mailfrom}' into '$tmpfrom'",
-                    1
-                );
-                $l =~ s/\Q$this->{mailfrom}\E/$tmpfrom/;
-            } else {
-                mlog( $fh, "SRS rewriting sender '$this->{mailfrom}' failed!",
-                    1 );
-            }
-        }
-
-    } elsif($l=~/^ *(VRFY|EXPN) *([^\r\n]*)/io) {
+    } elsif ($l=~/^ *(VRFY|EXPN) *([^\r\n]*)/io) {
         $this->{lastcmd} = $1;
         my $e=$2;
         push(@{$this->{cmdlist}},$this->{lastcmd}) if $ConnectionLog >= 2;
@@ -18243,10 +18213,11 @@ sub CheckAttachments {
 				$mailbody =~ s/SUBJECT/$this->{subject}/go;
 				$mailbody =~ s/FILENAME/$name/go;
 				$mailbody =~ s/MYNAME/$myName/go;
+				$mailbody =~ s/MAILFROM/$EmailFrom/go;
 
 				# Send attachment report to recipient if set
 				&sendNotification (
-					$this->{rcpt},
+					$EmailFrom,
 					$this->{rcpt},
 					$subject,
 					$mailbody
@@ -30345,7 +30316,7 @@ $headline
 <input type=search name=search value="$pat" size=36 autofocus=1 data-tip="$h5"/></label>
 </div>
 
-<label>default tail bytes:
+<label>tail bytes:
 <input type=number name=tailbyte value="$currTailByte" /></label>
 
 <label>search in:
