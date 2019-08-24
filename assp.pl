@@ -43,7 +43,7 @@ our $modversion      = '(16065)';
 # Andrew Macpherson, Marco Michelino, Matti Haack, Dave Emory
 
 
-use bytes;    # get rid of annoying 'Malformed UTF-8' messages
+use bytes;        # get rid of annoying 'Malformed UTF-8' messages
 use Encode;
 use Encode::Guess;
 use MIME::Base64;
